@@ -12,14 +12,14 @@ services:
 
   frpc-inter:
     image: snowdreamtech/frpc
-    container_name: music_frpc_inter
+    container_name: monitor_frpc_inter
     volumes:
       - "./deploy/frpc/frpc1.ini:/etc/frp/frpc.ini"
     restart: always
 
   frpc-out:
     image: snowdreamtech/frpc
-    container_name: music_frpc_out
+    container_name: monitor_frpc_out
     volumes:
       - "./deploy/frpc/frpc2.ini:/etc/frp/frpc.ini"
     restart: always
