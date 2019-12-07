@@ -19,3 +19,5 @@ nginx/cert/music.pem
 log
 
 .env
+
+vendor

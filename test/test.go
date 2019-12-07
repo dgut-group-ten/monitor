@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"monitor-01/cache/myredis"
 	"strings"
 )
 
@@ -40,8 +41,7 @@ func main() {
 		fmt.Println(keyStr)
 		logs, _ := redisPool.Cmd("LRANGE", keyStr, "0", "-1").Array()
 		for _, log := range logs {
-			logStr, _ := log.Str()
-			fmt.Printf(logStr)
+			_, _ = log.Str()
 		}
 	}
 

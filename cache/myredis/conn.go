@@ -3,6 +3,7 @@ package myredis
 import (
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/mediocregopher/radix.v2/redis"
+	"monitor-01/util"
 	"time"
 )
 
@@ -13,7 +14,7 @@ func df(network, addr string) (*redis.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err = client.Cmd("AUTH", "").Err; err != nil {
+	if err = client.Cmd("AUTH", "123456").Err; err != nil {
 		client.Close()
 		return nil, err
 	}
@@ -22,7 +23,7 @@ func df(network, addr string) (*redis.Client, error) {
 
 // 创建redis连接池
 func newRedisPool() *pool.Pool {
-	redisPool, err := pool.NewCustom("tcp", "", 2*5, df)
+	redisPool, err := pool.NewCustom("tcp", "music-01.niracler.com:6377", 2*5, df)
 	if err != nil {
 		util.Log.Fatalln("Redis pooll created failed.")
 		panic(err)
