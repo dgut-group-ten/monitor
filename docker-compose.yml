@@ -1,34 +1,25 @@
 version: "2"
 
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: nginx_proxy
-    ports:
-      - "8001-8005:8001-8005"
-      - "7500:7500"
-      - "7001:7001"
-    volumes:
-      - "/log/:/var/log/nginx/"
-      - "./nginx/cert/music.pem:/etc/nginx/cert/music.pem"
-      - "./nginx/cert/music.key:/etc/nginx/cert/music.key"
-      - "./nginx/nginx-base.conf:/etc/nginx/nginx.conf"
-      - "./nginx/nginx-stream-proxy.conf:/etc/nginx/stream.conf.d/nginx-stream-proxy.conf"
-      - "./nginx/nginx-http-proxy.conf:/etc/nginx/conf.d/default.conf"
-    restart: always
-
-  collect:
-    container_name: log_collect
+  web:
+    container_name: log_monitor
     build: .
-    volumes:
-      - "/log/:/go/src/nginx-proxy/log/"
     env_file:
       - .env
+    ports:
+      - "8004:8004"
     restart: always
 
-  frp:
-    image: cloverzrg/frps-docker
-    container_name: frp
+  frpc-inter:
+    image: snowdreamtech/frpc
+    container_name: music_frpc_inter
     volumes:
-      - "./frps/frps.ini:/conf/frps.ini"
-    restart: always  
+      - "./deploy/frpc/frpc1.ini:/etc/frp/frpc.ini"
+    restart: always
+
+  frpc-out:
+    image: snowdreamtech/frpc
+    container_name: music_frpc_out
+    volumes:
+      - "./deploy/frpc/frpc2.ini:/etc/frp/frpc.ini"
+    restart: always

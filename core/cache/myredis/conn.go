@@ -1,9 +1,9 @@
 package myredis
 
 import (
-	"github.com/mediocregopher/radix.v2/pool"
-	"github.com/mediocregopher/radix.v2/redis"
-	"monitor-01/util"
+	util2 "monitor/core/util"
+	"monitor/vendor/github.com/mediocregopher/radix.v2/pool"
+	"monitor/vendor/github.com/mediocregopher/radix.v2/redis"
 	"time"
 )
 
@@ -25,7 +25,7 @@ func df(network, addr string) (*redis.Client, error) {
 func newRedisPool() *pool.Pool {
 	redisPool, err := pool.NewCustom("tcp", "music-01.niracler.com:6377", 2*5, df)
 	if err != nil {
-		util.Log.Fatalln("Redis pooll created failed.")
+		util2.Log.Fatalln("Redis pooll created failed.")
 		panic(err)
 	} else {
 		go func() {

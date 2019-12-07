@@ -1,4 +1,4 @@
-module monitor-01
+module monitor
 
 go 1.13
 

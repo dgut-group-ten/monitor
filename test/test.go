@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"monitor-01/cache/myredis"
+	"monitor/core/cache/myredis"
 	"strings"
 )
 

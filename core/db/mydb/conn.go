@@ -3,7 +3,7 @@ package mydb
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	_ "monitor/vendor/github.com/go-sql-driver/mysql"
 	"os"
 )
 

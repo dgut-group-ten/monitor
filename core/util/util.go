@@ -98,3 +98,9 @@ func init() {
 	Log.Out = os.Stdout
 	Log.SetLevel(logrus.DebugLevel)
 }
+
+func Logerr(n int, err error) {
+	if err != nil {
+		Log.Printf("Write failed: %v", err)
+	}
+}
