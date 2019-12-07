@@ -1,0 +1,25 @@
+version: "2"
+
+services:
+  web:
+    container_name: log_monitor
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8004:8004"
+    restart: always
+
+  frpc-inter:
+    image: snowdreamtech/frpc
+    container_name: music_frpc_inter
+    volumes:
+      - "./deploy/frpc/frpc1.ini:/etc/frp/frpc.ini"
+    restart: always
+
+  frpc-out:
+    image: snowdreamtech/frpc
+    container_name: music_frpc_out
+    volumes:
+      - "./deploy/frpc/frpc2.ini:/etc/frp/frpc.ini"
+    restart: always
