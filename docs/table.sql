@@ -8,6 +8,7 @@ CREATE TABLE `monitor_user_operation`
     `uid`             BIGINT(20)   NOT NULL COMMENT '用户ID',
     `remote_addr`     VARCHAR(64)  NOT NULL COMMENT 'IP',
     `time_local`      DATETIME     NOT NULL COMMENT '时间',
+    `http_method`     VARCHAR(32)  NOT NULL COMMENT 'HTTP方法',
     `res_type`        VARCHAR(64)  NOT NULL COMMENT '资源类型',
     `res_id`          VARCHAR(64)  NOT NULL COMMENT '资源ID',
     `status`          VARCHAR(32)  NOT NULL COMMENT '状态码',

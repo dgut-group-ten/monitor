@@ -2,14 +2,14 @@ package task
 
 import (
 	"fmt"
-	"monitor/core/cache/myredis"
+	"monitor/core/cache"
 	"strings"
 )
 
 func UpdateUserOperation() {
 
 	fmt.Printf("开始更新用户行为数据\n")
-	redisPool := myredis.RedisPool()
+	redisPool := cache.RedisPool()
 
 	// 用户行为的记录审计数据格式(放在redis的列表中)
 	// IP 用户ID 资源类型 资源ID 使用设备 时间
@@ -36,7 +36,7 @@ func UpdateUserOperation() {
 func UpdatePVUV() {
 
 	fmt.Printf("开始更新pvuv数据\n")
-	redisPool := myredis.RedisPool()
+	redisPool := cache.RedisPool()
 
 	// PV,UV数据格式(放在多个redis的有序集合中)
 	// 统计类型 资源类型 时间类型 时间 资源ID 点击量

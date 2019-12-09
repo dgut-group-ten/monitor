@@ -1,4 +1,4 @@
-package myredis
+package cache
 
 import (
 	"github.com/mediocregopher/radix.v2/pool"

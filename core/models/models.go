@@ -14,6 +14,8 @@ type UserOperation struct {
 	HttpUserAgent     string
 	HttpXForwardedFor string
 	HttpToken         string
+	ResType           string
+	ResId             string
 }
 
 type VisitorCount struct {

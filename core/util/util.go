@@ -7,9 +7,11 @@ import (
 	"hash"
 	"io"
 	"log"
+	"monitor/core/conf"
 	"monitor/core/models"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -110,6 +112,21 @@ func CutLogFetchData(logStr string) *models.UserOperation {
 			log.Fatalf("Some different", res[3])
 			return nil
 		}
+		// 将数据放到 Channel
+		r1, _ := regexp.Compile(conf.ResourceType)
+		r2, _ := regexp.Compile("/([0-9]+)")
+		resType := r1.FindString(r[1])
+		if resType == "" {
+			resType = "other"
+		}
+
+		resId := r2.FindString(r[1])
+		if resId != "" {
+			resId = resId[1:]
+		} else {
+			resId = "list"
+		}
+
 		data := models.UserOperation{
 			RemoteAddr:        res[0],
 			RemoteUser:        res[1],
@@ -123,6 +140,8 @@ func CutLogFetchData(logStr string) *models.UserOperation {
 			HttpUserAgent:     res[7],
 			HttpXForwardedFor: res[8],
 			HttpToken:         res[9],
+			ResType:           resType,
+			ResId:             resId,
 		}
 
 		return &data

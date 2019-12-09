@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"monitor/core/cache/myredis"
+	"monitor/core/cache"
+	"monitor/core/db"
 	"monitor/core/models"
 	"monitor/core/util"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 )
 
 func main() {
-	redisPool := myredis.RedisPool()
+	redisPool := cache.RedisPool()
 	// 统计类型的种类: pv, uv
 	// 资源类型: song|author|playlist|user|admin|other|media|static 等
 	// 时间类型: day|hour|min
@@ -47,7 +48,10 @@ func main() {
 			logStr, _ := log.Str()
 			uo := util.CutLogFetchData(logStr) //将内容装到对象中
 			uo.Uid, _ = strconv.ParseInt(strings.Split(keyStr, "_")[1], 10, 64)
-			fmt.Println(uo)
+			err := db.UpdateUserOperationDB(uo)
+			if err != nil {
+				fmt.Println(err)
+			}
 			break
 		}
 	}
