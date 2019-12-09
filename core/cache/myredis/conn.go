@@ -1,9 +1,9 @@
 package myredis
 
 import (
+	"github.com/mediocregopher/radix.v2/pool"
+	"github.com/mediocregopher/radix.v2/redis"
 	util2 "monitor/core/util"
-	"monitor/vendor/github.com/mediocregopher/radix.v2/pool"
-	"monitor/vendor/github.com/mediocregopher/radix.v2/redis"
 	"time"
 )
 
