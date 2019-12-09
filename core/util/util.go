@@ -4,10 +4,8 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
-	"github.com/sirupsen/logrus"
 	"hash"
 	"io"
-	"monitor/core/conf"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -91,25 +89,4 @@ func GetTime(logTime, timeType string) string {
 	theTime, _ := time.Parse("02/Jan/2006:15:04:05 -0700", logTime)
 	t, _ := time.Parse(item, theTime.Format(item))
 	return strconv.FormatInt(t.Unix(), 10)
-}
-
-var Log = logrus.New()
-
-func init() {
-	Log.Out = os.Stdout
-	Log.SetLevel(logrus.DebugLevel)
-
-	logFd, err := os.OpenFile(conf.LogFile, os.O_CREATE|os.O_WRONLY, 0644)
-	if err == nil {
-		Log.Out = logFd
-		defer logFd.Close()
-	} else {
-		Log.Printf("log file failed: %v", err)
-	}
-}
-
-func Logerr(n int, err error) {
-	if err != nil {
-		Log.Printf("Write failed: %v", err)
-	}
 }
