@@ -24,15 +24,16 @@ CREATE TABLE `monitor_user_operation`
 -- 	// 统计类型 资源类型 时间类型 时间 资源ID 点击量
 -- 	// redis键格式: anyType + resType + timeType + timestamp
 -- pvuv
-CREATE TABLE `monitor_pvuv`
+CREATE TABLE `monitor_visitor_count`
 (
     `id`         INT(11)     NOT NULL AUTO_INCREMENT,
-    `any_type`   VARCHAR(32) NOT NULL COMMENT '统计类型',
+    `vis_type`   VARCHAR(32) NOT NULL COMMENT '统计类型',
     `res_type`   VARCHAR(64) NOT NULL COMMENT '资源类型',
     `res_id`     VARCHAR(64) NOT NULL COMMENT '资源ID',
     `time_type`  VARCHAR(32) NOT NULL COMMENT '时间类型',
     `time_local` DATETIME    NOT NULL COMMENT '时间',
     `click`      BIGINT(20)  NOT NULL COMMENT '点击量',
+    `created`    DATETIME DEFAULT NOW() COMMENT '创建日期',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

@@ -6,9 +6,12 @@ import (
 	"encoding/hex"
 	"hash"
 	"io"
+	"log"
+	"monitor/core/models"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -89,4 +92,41 @@ func GetTime(logTime, timeType string) string {
 	theTime, _ := time.Parse("02/Jan/2006:15:04:05 -0700", logTime)
 	t, _ := time.Parse(item, theTime.Format(item))
 	return strconv.FormatInt(t.Unix(), 10)
+}
+
+// 将一行的日志切割到结构体中
+func CutLogFetchData(logStr string) *models.UserOperation {
+	values := strings.Split(logStr, "\"")
+	var res []string
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			res = append(res, value)
+		}
+	}
+	if len(res) > 0 {
+		r := strings.Split(res[3], " ")
+		if len(r) < 3 {
+			log.Fatalf("Some different", res[3])
+			return nil
+		}
+		data := models.UserOperation{
+			RemoteAddr:        res[0],
+			RemoteUser:        res[1],
+			TimeLocal:         res[2],
+			HttpMethod:        r[0],
+			HttpUrl:           r[1],
+			HttpVersion:       r[2],
+			Status:            res[4],
+			BodyBytesSent:     res[5],
+			HttpReferer:       res[6],
+			HttpUserAgent:     res[7],
+			HttpXForwardedFor: res[8],
+			HttpToken:         res[9],
+		}
+
+		return &data
+	}
+
+	return nil
 }

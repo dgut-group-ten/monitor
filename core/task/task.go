@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"monitor/core/cache/myredis"
 	"strings"
-	"time"
 )
 
 func UpdateUserOperation() {
 
-	fmt.Printf("[%s] 开始更新用户行为数据\n", time.Now().Format("02/Jan/2006:15:04:05 -0700"))
+	fmt.Printf("开始更新用户行为数据\n")
 	redisPool := myredis.RedisPool()
 
 	// 用户行为的记录审计数据格式(放在redis的列表中)
@@ -26,16 +25,17 @@ func UpdateUserOperation() {
 		fmt.Printf("拿出 %s 中的数据条数:%d\n", keyStr, len(logs))
 
 		for _, log := range logs {
-			_, _ = log.Str()
+			logStr, _ := log.Str()
+			fmt.Println(logStr)
 		}
 	}
 
-	fmt.Printf("[%s] 更新用户行为数据结束\n", time.Now().Format("02/Jan/2006:15:04:05 -0700"))
+	fmt.Printf("更新用户行为数据结束\n")
 }
 
 func UpdatePVUV() {
 
-	fmt.Printf("[%s] 开始更新pvuv数据\n", time.Now().Format("02/Jan/2006:15:04:05 -0700"))
+	fmt.Printf("开始更新pvuv数据\n")
 	redisPool := myredis.RedisPool()
 
 	// PV,UV数据格式(放在多个redis的有序集合中)
@@ -60,6 +60,6 @@ func UpdatePVUV() {
 		}
 	}
 
-	fmt.Printf("[%s] 更新pvuv数据结束\n", time.Now().Format("02/Jan/2006:15:04:05 -0700"))
+	fmt.Printf("更新pvuv数据结束\n")
 
 }

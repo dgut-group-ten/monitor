@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"monitor/core/cache/myredis"
+	"monitor/core/models"
+	"monitor/core/util"
+	"strconv"
 	"strings"
 )
 
@@ -41,7 +44,11 @@ func main() {
 		fmt.Println(keyStr)
 		logs, _ := redisPool.Cmd("LRANGE", keyStr, "0", "-1").Array()
 		for _, log := range logs {
-			_, _ = log.Str()
+			logStr, _ := log.Str()
+			uo := util.CutLogFetchData(logStr) //将内容装到对象中
+			uo.Uid, _ = strconv.ParseInt(strings.Split(keyStr, "_")[1], 10, 64)
+			fmt.Println(uo)
+			break
 		}
 	}
 
@@ -59,8 +66,19 @@ func main() {
 			resources, _ := redisPool.Cmd("ZRANGE", keyStr, "0", "-1").Array()
 			for _, resource := range resources {
 				resID, _ := resource.Str()
-				score, _ := redisPool.Cmd("ZSCORE", keyStr, resource).Str()
-				fmt.Println(items, resID+" "+score)
+				score, _ := redisPool.Cmd("ZSCORE", keyStr, resource).Int64()
+
+				//将内容装到对象中
+				vc := models.VisitorCount{
+					VisType:   items[0],
+					ResType:   items[1],
+					ResId:     resID,
+					TimeType:  items[2],
+					TimeLocal: items[3],
+					Click:     score,
+				}
+				fmt.Println(vc)
+				break
 			}
 		}
 	}
