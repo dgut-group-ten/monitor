@@ -29,3 +29,4 @@ git merge upstream/master
 ## 参考文章
 
 - [IDEA sql自动补全/sql自动提示/sql列名提示](https://www.cnblogs.com/jpfss/p/11051015.html)
+- [How to insert multiple data at once](https://stackoverflow.com/questions/21108084/how-to-insert-multiple-data-at-once)

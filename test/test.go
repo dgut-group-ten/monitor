@@ -40,6 +40,8 @@ func main() {
 	res, _ := redisPool.Cmd("scan", "0", "MATCH", prefix, "COUNT", "10000").Array()
 	keys, _ := res[1].Array()
 
+	uoList := []*models.UserOperation{}
+	count := 0
 	for _, key := range keys {
 		keyStr, _ := key.Str()
 		fmt.Println(keyStr)
@@ -48,12 +50,22 @@ func main() {
 			logStr, _ := log.Str()
 			uo := util.CutLogFetchData(logStr) //将内容装到对象中
 			uo.Uid, _ = strconv.ParseInt(strings.Split(keyStr, "_")[1], 10, 64)
-			err := db.UpdateUserOperationDB(uo)
-			if err != nil {
-				fmt.Println(err)
+			uoList = append(uoList, uo)
+
+			// 每一百条插一次数据库
+			if count%100 == 0 {
+				err := db.UpdateUserOperationDB(uoList)
+				if err != nil {
+					fmt.Println(err)
+				}
+				uoList = []*models.UserOperation{}
 			}
-			break
+			count++
 		}
+	}
+	err := db.UpdateUserOperationDB(uoList)
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	// PV,UV数据格式(放在多个redis的有序集合中)
