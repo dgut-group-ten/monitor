@@ -27,9 +27,9 @@ func UpdateUserOperation() {
 	for _, key := range keys {
 		keyStr, _ := key.Str()
 		logs, _ := redisPool.Cmd("LRANGE", keyStr, "0", "-1").Array()
-		//num, _ := redisPool.Cmd("DEL", keyStr).Int64()
+		num, _ := redisPool.Cmd("DEL", keyStr).Int64()
 
-		fmt.Printf("拿出 %s 中的数据条数:%d, 并删除 %d\n", keyStr, len(logs), 1)
+		fmt.Printf("拿出 %s 中的数据条数:%d, 并删除 %d\n", keyStr, len(logs), num)
 
 		for _, log := range logs {
 			logStr, _ := log.Str()
@@ -49,9 +49,11 @@ func UpdateUserOperation() {
 			count++
 		}
 	}
-	err := db.UpdateUserOperationDB(uoList)
-	if err != nil {
-		fmt.Println(err)
+	if len(uoList) != 0 {
+		err := db.UpdateUserOperationDB(uoList)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	fmt.Printf("成功插入%d条数据\n", len(uoList))
 	fmt.Printf("更新用户行为数据结束\n")
@@ -73,17 +75,17 @@ func UpdatePVUV() {
 		res, _ := redisPool.Cmd("scan", "0", "MATCH", prefix, "COUNT", "100000").Array()
 		keys, _ := res[1].Array()
 
-		fmt.Printf("拿出 %s 中的数据条数: %d\n", prefix, len(keys))
-
 		for _, key := range keys {
 			keyStr, _ := key.Str()
 			items := strings.Split(keyStr, "_")
 			resources, _ := redisPool.Cmd("ZRANGE", keyStr, "0", "-1").Array()
 
+			fmt.Printf("拿出 %s 中的数据条数: %d, 并删除\n", keyStr, len(resources))
+
 			for _, resource := range resources {
 				resID, _ := resource.Str()
 				score, _ := redisPool.Cmd("ZSCORE", keyStr, resource).Int64()
-				//fmt.Println(items, resID+" "+score)
+				_, _ = redisPool.Cmd("ZREM", keyStr, resource).Int64()
 
 				//将内容装到对象中
 				vc := models.VisitorCount{
@@ -91,7 +93,7 @@ func UpdatePVUV() {
 					ResType:   items[1],
 					ResId:     resID,
 					TimeType:  items[2],
-					TimeLocal: items[3],
+					TimeLocal: util.GetTime(items[3]),
 					Click:     score,
 				}
 				vcList = append(vcList, &vc)
@@ -111,11 +113,12 @@ func UpdatePVUV() {
 		}
 	}
 
-	err := db.UpdateVisitorCountDB(vcList)
-	if err != nil {
-		fmt.Println(err)
+	if len(vcList) != 0 {
+		err := db.UpdateVisitorCountDB(vcList)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("成功插入%d条数据\n", len(vcList))
+		fmt.Printf("更新pvuv数据结束\n")
 	}
-	fmt.Printf("成功插入%d条数据\n", len(vcList))
-	fmt.Printf("更新pvuv数据结束\n")
-
 }

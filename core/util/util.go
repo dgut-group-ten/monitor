@@ -77,7 +77,7 @@ func GetFileSize(filename string) int64 {
 }
 
 // 将日志文件中的时间格式化为时间戳的函数
-func GetTime(logTime, timeType string) string {
+func GetTimeStamp(logTime, timeType string) string {
 	var item string
 
 	switch timeType {
@@ -126,11 +126,12 @@ func CutLogFetchData(logStr string) *models.UserOperation {
 		} else {
 			resId = "list"
 		}
+		theTime, _ := time.Parse("02/Jan/2006:15:04:05 -0700", res[2])
 
 		data := models.UserOperation{
 			RemoteAddr:        res[0],
 			RemoteUser:        res[1],
-			TimeLocal:         res[2],
+			TimeLocal:         theTime.Format("2006-01-02 15:04:05"),
 			HttpMethod:        r[0],
 			HttpUrl:           r[1],
 			HttpVersion:       r[2],
@@ -148,4 +149,11 @@ func CutLogFetchData(logStr string) *models.UserOperation {
 	}
 
 	return nil
+}
+
+func GetTime(timeStamp string) string {
+	//0000-00-00 00:00:00
+	sec, _ := strconv.ParseInt(timeStamp, 10, 64)
+	tm := time.Unix(sec, 0)
+	return tm.Format("2006-01-02 15:04:05")
 }
