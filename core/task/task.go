@@ -62,6 +62,9 @@ func UpdatePVUV() {
 	fmt.Printf("开始更新pvuv数据\n")
 	redisPool := cache.RedisPool()
 
+	vcList := []*models.VisitorCount{}
+	count := 0
+
 	// PV,UV数据格式(放在多个redis的有序集合中)
 	// 统计类型 资源类型 时间类型 时间 资源ID 点击量
 	// redis键格式: anyType + resType + timeType + timestamp
@@ -74,17 +77,45 @@ func UpdatePVUV() {
 
 		for _, key := range keys {
 			keyStr, _ := key.Str()
-			_ = strings.Split(keyStr, "_")
+			items := strings.Split(keyStr, "_")
 			resources, _ := redisPool.Cmd("ZRANGE", keyStr, "0", "-1").Array()
 
 			for _, resource := range resources {
-				_, _ = resource.Str()
-				_, _ = redisPool.Cmd("ZSCORE", keyStr, resource).Str()
+				resID, _ := resource.Str()
+				score, _ := redisPool.Cmd("ZSCORE", keyStr, resource).Int64()
 				//fmt.Println(items, resID+" "+score)
+
+				//将内容装到对象中
+				vc := models.VisitorCount{
+					VisType:   items[0],
+					ResType:   items[1],
+					ResId:     resID,
+					TimeType:  items[2],
+					TimeLocal: items[3],
+					Click:     score,
+				}
+				vcList = append(vcList, &vc)
+
+				// 每5000条插一次数据库
+				if count%5000 == 0 {
+					err := db.UpdateVisitorCountDB(vcList)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Printf("成功插入%d条数据\n", len(vcList))
+					vcList = []*models.VisitorCount{}
+				}
+				count++
+
 			}
 		}
 	}
 
+	err := db.UpdateVisitorCountDB(vcList)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("成功插入%d条数据\n", len(vcList))
 	fmt.Printf("更新pvuv数据结束\n")
 
 }
