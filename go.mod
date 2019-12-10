@@ -7,6 +7,6 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/mediocregopher/radix.v2 v0.0.0-20181115013041-b67df6e626f9
 	github.com/robfig/cron/v3 v3.0.0
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.4.2 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 )
