@@ -1,28 +1,26 @@
 package main
 
 import (
-	"monitor/core/conf"
+	"github.com/robfig/cron/v3"
 	"monitor/core/handler"
-	"monitor/core/util"
+	"monitor/core/task"
 	"net/http"
-	"os"
 )
 
 func main() {
-	// 打日志
-	logFd, err := os.OpenFile(conf.LogFile, os.O_CREATE|os.O_WRONLY, 0644)
-	if err == nil {
-		util.Log.Out = logFd
-		defer logFd.Close()
-	}
-	util.Log.Infof("Exec start.\n")
-	util.Log.Infof("Welcome to log monitor.\n")
 
-	// 网页
+	// 定时任务
+	c := cron.New()
+	_, _ = c.AddFunc("*/30 * * * *", task.UpdateUserOperation)
+	_, _ = c.AddFunc("*/20 * * * *", task.UpdatePVUV)
+	c.Start()
+	defer c.Stop()
+
+	// 网页路由
 	http.HandleFunc("/", handler.HelloHandler)
 
-	err = http.ListenAndServe(":8004", nil)
+	err := http.ListenAndServe(":8004", nil)
 	if err != nil {
-		util.Log.Panicln("Failed to start server , err: " + err.Error())
+		panic("Failed to start server , err: " + err.Error())
 	}
 }

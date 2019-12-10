@@ -4,12 +4,16 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
-	"github.com/sirupsen/logrus"
 	"hash"
 	"io"
+	"log"
+	"monitor/core/conf"
+	"monitor/core/models"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -73,7 +77,7 @@ func GetFileSize(filename string) int64 {
 }
 
 // 将日志文件中的时间格式化为时间戳的函数
-func GetTime(logTime, timeType string) string {
+func GetTimeStamp(logTime, timeType string) string {
 	var item string
 
 	switch timeType {
@@ -92,15 +96,64 @@ func GetTime(logTime, timeType string) string {
 	return strconv.FormatInt(t.Unix(), 10)
 }
 
-var Log = logrus.New()
+// 将一行的日志切割到结构体中
+func CutLogFetchData(logStr string) *models.UserOperation {
+	values := strings.Split(logStr, "\"")
+	var res []string
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			res = append(res, value)
+		}
+	}
+	if len(res) > 0 {
+		r := strings.Split(res[3], " ")
+		if len(r) < 3 {
+			log.Fatalf("Some different", res[3])
+			return nil
+		}
+		// 将数据放到 Channel
+		r1, _ := regexp.Compile(conf.ResourceType)
+		r2, _ := regexp.Compile("/([0-9]+)")
+		resType := r1.FindString(r[1])
+		if resType == "" {
+			resType = "other"
+		}
 
-func init() {
-	Log.Out = os.Stdout
-	Log.SetLevel(logrus.DebugLevel)
+		resId := r2.FindString(r[1])
+		if resId != "" {
+			resId = resId[1:]
+		} else {
+			resId = "list"
+		}
+		theTime, _ := time.Parse("02/Jan/2006:15:04:05 -0700", res[2])
+
+		data := models.UserOperation{
+			RemoteAddr:        res[0],
+			RemoteUser:        res[1],
+			TimeLocal:         theTime.Format("2006-01-02 15:04:05"),
+			HttpMethod:        r[0],
+			HttpUrl:           r[1],
+			HttpVersion:       r[2],
+			Status:            res[4],
+			BodyBytesSent:     res[5],
+			HttpReferer:       res[6],
+			HttpUserAgent:     res[7],
+			HttpXForwardedFor: res[8],
+			HttpToken:         res[9],
+			ResType:           resType,
+			ResId:             resId,
+		}
+
+		return &data
+	}
+
+	return nil
 }
 
-func Logerr(n int, err error) {
-	if err != nil {
-		Log.Printf("Write failed: %v", err)
-	}
+func GetTime(timeStamp string) string {
+	//0000-00-00 00:00:00
+	sec, _ := strconv.ParseInt(timeStamp, 10, 64)
+	tm := time.Unix(sec, 0)
+	return tm.Format("2006-01-02 15:04:05")
 }

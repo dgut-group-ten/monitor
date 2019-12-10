@@ -1,9 +1,9 @@
-package mydb
+package db
 
 import (
 	"database/sql"
-	"fmt"
-	_ "monitor/vendor/github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"os"
 )
 
@@ -14,7 +14,7 @@ func init() {
 	db.SetMaxOpenConns(1000)
 	err := db.Ping()
 	if err != nil {
-		fmt.Println("Failed connect to mysql:" + err.Error())
+		log.Println("Failed connect to mysql:" + err.Error())
 		os.Exit(1)
 	}
 }

@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"log"
 )
 
 // RespMsg : http响应数据的通用结构
@@ -22,7 +23,7 @@ func NewRespMsg(msg string, data interface{}) *RespMsg {
 func (resp *RespMsg) JSONBytes() []byte {
 	r, err := json.Marshal(resp)
 	if err != nil {
-		Log.Println(err)
+		log.Println(err)
 	}
 	return r
 }
@@ -31,7 +32,7 @@ func (resp *RespMsg) JSONBytes() []byte {
 func (resp *RespMsg) JSONString() string {
 	r, err := json.Marshal(resp)
 	if err != nil {
-		Log.Println(err)
+		log.Println(err)
 	}
 	return string(r)
 }

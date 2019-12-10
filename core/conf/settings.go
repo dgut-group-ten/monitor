@@ -1,3 +1,3 @@
 package conf
 
-const LogFile = "log/app.log"
+const ResourceType = "song|author|playlist|user|admin|other|media|static|comment"
