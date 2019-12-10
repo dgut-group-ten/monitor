@@ -8,6 +8,7 @@ import (
 	"monitor/core/util"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func UpdateUserOperation() {
@@ -79,6 +80,21 @@ func UpdatePVUV() {
 			keyStr, _ := key.Str()
 			items := strings.Split(keyStr, "_")
 			resources, _ := redisPool.Cmd("ZRANGE", keyStr, "0", "-1").Array()
+			timeStr := util.GetTime(items[3])
+			theTime, _ := time.Parse("2006-01-02 15:04:05", timeStr)
+
+			//与当前时间进行比较
+			k := time.Now()
+			var d time.Duration
+			if items[2] == "day" {
+				d, _ = time.ParseDuration("-24h")
+			} else if items[2] == "hour" {
+				d, _ = time.ParseDuration("-1h")
+			}
+			if !theTime.Before(k.Add(d)) {
+				fmt.Println("跳过", theTime)
+				continue
+			}
 
 			fmt.Printf("拿出 %s 中的数据条数: %d, 并删除\n", keyStr, len(resources))
 
@@ -93,7 +109,7 @@ func UpdatePVUV() {
 					ResType:   items[1],
 					ResId:     resID,
 					TimeType:  items[2],
-					TimeLocal: util.GetTime(items[3]),
+					TimeLocal: timeStr,
 					Click:     score,
 				}
 				vcList = append(vcList, &vc)

@@ -12,7 +12,7 @@ func main() {
 	// 定时任务
 	c := cron.New()
 	_, _ = c.AddFunc("*/30 * * * *", task.UpdateUserOperation)
-	_, _ = c.AddFunc("*/20 * * * *", task.UpdatePVUV)
+	_, _ = c.AddFunc("*/50 * * * *", task.UpdatePVUV)
 	c.Start()
 	defer c.Stop()
 
