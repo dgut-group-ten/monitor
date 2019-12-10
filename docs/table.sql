@@ -38,3 +38,5 @@ CREATE TABLE `monitor_visitor_count`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
+
+SELECT COUNT(`id`) FROM `monitor_user_operation` WHERE uid = 28;

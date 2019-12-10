@@ -5,6 +5,7 @@ import (
 	"monitor/core/models"
 )
 
+// 更新uo
 func UpdateUserOperationDB(uoList []*models.UserOperation) (err error) {
 
 	sqlStr := "INSERT IGNORE INTO monitor_user_operation (" +
@@ -42,6 +43,7 @@ func UpdateUserOperationDB(uoList []*models.UserOperation) (err error) {
 	return nil
 }
 
+// 更新vc
 func UpdateVisitorCountDB(vcList []*models.VisitorCount) (err error) {
 
 	sqlStr := "INSERT IGNORE monitor_visitor_count (vis_type, res_type, res_id, time_type, time_local, click) VALUES "
@@ -69,4 +71,23 @@ func UpdateVisitorCountDB(vcList []*models.VisitorCount) (err error) {
 	}
 
 	return nil
+}
+
+// 计算某个用户的操作的条数
+func CountUserOperationDB(uid int64) (count int64, err error) {
+	stmt, err := DBConn().Prepare("SELECT COUNT(`id`) FROM `monitor_user_operation` WHERE uid=?")
+	if err != nil {
+		fmt.Println("语句有问题")
+		return count, err
+	}
+
+	defer stmt.Close()
+
+	err = stmt.QueryRow(uid).Scan(&count)
+	if err != nil {
+		fmt.Println("拿数据的时候出现问题")
+		return count, err
+	}
+
+	return count, nil
 }
