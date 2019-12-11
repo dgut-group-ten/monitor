@@ -13,8 +13,8 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method == http.MethodGet {
 		w.WriteHeader(http.StatusOK)
-		resp := util.RespMsg{Msg: "Hello World"}
-		_, _ = w.Write(resp.JSONBytes())
+		resp := models.RespMsg{Msg: "Hello World"}
+		_, _ = w.Write(util.JSONBytes(resp))
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed) // 其他操作不允许
 	}
@@ -37,22 +37,30 @@ func HistoryHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		w.WriteHeader(http.StatusOK)
-		resp := util.RespMsg{
-			Msg: "用户历史行为",
-			Data: struct {
-				Count  int64                  `json:"count"`
-				P      int64                  `json:"p"`
-				PS     int64                  `json:"ps"`
-				UOList []models.UserOperation `json:"uoList"`
-			}{
-				Count:  count,
-				P:      p,
-				PS:     ps,
-				UOList: uoList,
-			},
+		// 上一页
+		var pre interface{}
+		if p > 1 {
+			pre = "http://" + r.Host + "/uo/history/?p=" + fmt.Sprintf("%d", p-1)
+		} else {
+			pre = nil
 		}
-		_, _ = w.Write(resp.JSONBytes())
+		// 下一页
+		var next interface{}
+		if p < count/ps+1 {
+			next = "http://" + r.Host + "/uo/history/?p=" + fmt.Sprintf("%d", p+1)
+		} else {
+			next = nil
+		}
+
+		w.WriteHeader(http.StatusOK)
+		resp := models.PageMsg{
+			Count:    count,
+			Previous: pre,
+			Next:     next,
+			Results:  uoList,
+		}
+
+		_, _ = w.Write(util.JSONBytes(resp))
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed) // 其他操作不允许
 	}
