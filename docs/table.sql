@@ -4,18 +4,19 @@
 -- 用户行为
 CREATE TABLE `monitor_user_operation`
 (
-    `id`              INT(11)      NOT NULL AUTO_INCREMENT,
-    `uid`             BIGINT(20)   NOT NULL COMMENT '用户ID',
-    `remote_addr`     VARCHAR(64)  NOT NULL COMMENT 'IP',
-    `time_local`      DATETIME     NOT NULL COMMENT '时间',
-    `http_method`     VARCHAR(32)  NOT NULL COMMENT 'HTTP方法',
-    `res_type`        VARCHAR(64)  NOT NULL COMMENT '资源类型',
-    `res_id`          VARCHAR(64)  NOT NULL COMMENT '资源ID',
-    `status`          VARCHAR(32)  NOT NULL COMMENT '状态码',
-    `body_bytes_sent` BIGINT(20)   NOT NULL COMMENT '传输数据大小',
-    `http_referer`    VARCHAR(128) NOT NULL COMMENT '来源页面',
-    `http_user_agent` VARCHAR(256) NOT NULL COMMENT '使用设备',
-    `created`         DATETIME DEFAULT NOW() COMMENT '创建日期',
+    `id`              INT(11)                  NOT NULL AUTO_INCREMENT,
+    `uid`             BIGINT(20)               NOT NULL COMMENT '用户ID',
+    `remote_addr`     VARCHAR(64)              NOT NULL COMMENT 'IP',
+    `time_local`      DATETIME                 NOT NULL COMMENT '时间',
+    `http_method`     VARCHAR(32)              NOT NULL COMMENT 'HTTP方法',
+    `res_type`        VARCHAR(64)              NOT NULL COMMENT '资源类型',
+    `res_id`          VARCHAR(64)              NOT NULL COMMENT '资源ID',
+    `status`          VARCHAR(32)              NOT NULL COMMENT '状态码',
+    `body_bytes_sent` BIGINT(20)               NOT NULL COMMENT '传输数据大小',
+    `http_referer`    VARCHAR(128)             NOT NULL COMMENT '来源页面',
+    `http_user_agent` VARCHAR(256)             NOT NULL COMMENT '使用设备',
+    `created`         DATETIME     DEFAULT NOW() COMMENT '创建日期',
+    `http_url`        VARCHAR(128) DEFAULT '-' NOT NULL COMMENT 'url',
     PRIMARY KEY (`id`),
     KEY `idx_uid` (`uid`)
 ) ENGINE = InnoDB
@@ -39,4 +40,6 @@ CREATE TABLE `monitor_visitor_count`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
-SELECT COUNT(`id`) FROM `monitor_user_operation` WHERE uid = 28;
+SELECT COUNT(`id`)
+FROM `monitor_user_operation`
+WHERE uid = 28;

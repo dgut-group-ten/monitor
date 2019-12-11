@@ -19,7 +19,7 @@ func main() {
 	// 网页路由
 	http.HandleFunc("/", handler.HelloHandler)
 	http.HandleFunc("/vc/", handler.HelloHandler)
-	http.HandleFunc("/uo/", handler.HelloHandler)
+	http.HandleFunc("/uo/history/", handler.HistoryHandler)
 
 	err := http.ListenAndServe(":8004", nil)
 	if err != nil {
