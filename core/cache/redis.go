@@ -25,7 +25,7 @@ func df(network, addr string) (*redis.Client, error) {
 func newRedisPool() *pool.Pool {
 	redisPool, err := pool.NewCustom("tcp", "music-01.niracler.com:6377", 2*5, df)
 	if err != nil {
-		log.Fatal("Redis pooll created failed.")
+		log.Fatal("Redis pool created failed.")
 	} else {
 		go func() {
 			for {

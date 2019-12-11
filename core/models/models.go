@@ -1,21 +1,21 @@
 package models
 
 type UserOperation struct {
-	Uid               int64
-	RemoteAddr        string
-	RemoteUser        string
-	TimeLocal         string
-	HttpMethod        string
-	HttpUrl           string
-	HttpVersion       string
-	Status            string
-	BodyBytesSent     string
-	HttpReferer       string
-	HttpUserAgent     string
-	HttpXForwardedFor string
-	HttpToken         string
-	ResType           string
-	ResId             string
+	Uid               int64  `json:"uid"`
+	RemoteAddr        string `json:"remoteAddr"`
+	RemoteUser        string `json:"-"`
+	TimeLocal         string `json:"timeLocal"`
+	HttpMethod        string `json:"httpMethod"`
+	HttpUrl           string `json:"httpUrl"`
+	HttpVersion       string `json:"-"`
+	Status            string `json:"status"`
+	BodyBytesSent     string `json:"bodyBytesSent"`
+	HttpReferer       string `json:"httpReferer"`
+	HttpUserAgent     string `json:"httpUserAgent"`
+	HttpXForwardedFor string `json:"-"`
+	HttpToken         string `json:"-"`
+	ResType           string `json:"resType"`
+	ResId             string `json:"resId"`
 }
 
 type VisitorCount struct {
