@@ -94,7 +94,7 @@ func CountUserOperationDB(uid int64) (count int64, err error) {
 
 // 获取用户历史行为
 func GetUserHistoryDB(uid, p, ps int64) (uoList []models.UserOperation, err error) {
-	stmt, err := DBConn().Prepare("SELECT uid, remote_addr, time_local, http_method, res_type, res_id, status, body_bytes_sent, http_referer, http_user_agent, http_url FROM `monitor_user_operation` WHERE uid=? AND http_method='GET' AND (res_type = 'song' or res_type = 'playlist' ) LIMIT ?")
+	stmt, err := DBConn().Prepare("SELECT uid, remote_addr, time_local, http_method, res_type, res_id, status, body_bytes_sent, http_referer, http_user_agent, http_url FROM `monitor_user_operation` WHERE uid=? AND http_method='GET' AND (res_type = 'song' or res_type = 'playlist' ) ORDER BY time_local DESC LIMIT ?, ? ")
 	if err != nil {
 		fmt.Println("语句有问题")
 		return uoList, err
@@ -102,7 +102,7 @@ func GetUserHistoryDB(uid, p, ps int64) (uoList []models.UserOperation, err erro
 
 	defer stmt.Close()
 
-	rows, err := stmt.Query(uid, ps)
+	rows, err := stmt.Query(uid, (p-1)*ps, p*ps)
 	if err != nil {
 		fmt.Println("执行时有问题")
 		return nil, err
