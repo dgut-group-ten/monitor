@@ -11,16 +11,16 @@ func UpdateUserOperationDB(uoList []*models.UserOperation) (err error) {
 	sqlStr := "INSERT IGNORE INTO monitor_user_operation (" +
 		"`uid`, `remote_addr`, `time_local`, `http_method`, " +
 		"`res_type`, `res_id`, `status`, `body_bytes_sent`, " +
-		"`http_referer`, `http_user_agent`) " +
+		"`http_referer`, `http_user_agent`, `http_url`) " +
 		"VALUES "
 	vals := []interface{}{}
 
 	for _, uo := range uoList {
-		sqlStr += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?), "
+		sqlStr += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?), "
 		vals = append(
 			vals, uo.Uid, uo.RemoteAddr, uo.TimeLocal, uo.HttpMethod,
 			uo.ResType, uo.ResId, uo.Status, uo.BodyBytesSent,
-			uo.HttpReferer, uo.HttpUserAgent,
+			uo.HttpReferer, uo.HttpUserAgent, uo.HttpUrl,
 		)
 	}
 	//trim the last ,
