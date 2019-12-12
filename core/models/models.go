@@ -1,13 +1,5 @@
 package models
 
-// 分页数据通用结构
-type PageMsg struct {
-	Count    int64       `json:"count"`
-	Previous interface{} `json:"previous"`
-	Next     interface{} `json:"next"`
-	Results  interface{} `json:"results"`
-}
-
 // RespMsg : http响应数据的通用结构
 type RespMsg struct {
 	Msg    string      `json:"msg"`
