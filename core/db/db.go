@@ -119,3 +119,49 @@ func GetUserHistoryDB(uid, p, ps int64) (uoList []models.UserOperation, err erro
 
 	return uoList, nil
 }
+
+// 计算某个资源的vc的条数
+func CountVisitorCountDB(visType, resType, resId, timeType string) (count int64, err error) {
+	stmt, err := DBConn().Prepare("SELECT COUNT(`id`) FROM `monitor_visitor_count` WHERE vis_type=? AND res_type=? AND res_id=? AND time_type=?")
+	if err != nil {
+		fmt.Println("语句有问题")
+		return count, err
+	}
+
+	defer stmt.Close()
+
+	err = stmt.QueryRow(visType, resType, resId, timeType).Scan(&count)
+	if err != nil {
+		fmt.Println("拿数据的时候出现问题")
+		return count, err
+	}
+
+	return count, nil
+}
+
+// 获取点击量数据
+func GetVisitorCount(visType, resType, resId, timeType string, p, ps int64) (vcList []models.VisitorCount, err error) {
+	stmt, err := DBConn().Prepare("SELECT vis_type, res_type, res_id, time_type, time_local, click  FROM `monitor_visitor_count` WHERE vis_type=? AND res_type=? AND res_id=? AND time_type=? ORDER BY time_local DESC LIMIT ?, ? ")
+	if err != nil {
+		fmt.Println("语句有问题")
+		return vcList, err
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(visType, resType, resId, timeType, (p-1)*ps, p*ps)
+	if err != nil {
+		fmt.Println("执行时有问题")
+		return nil, err
+	}
+
+	for rows.Next() {
+		vc := models.VisitorCount{}
+		err = rows.Scan(&vc.VisType, &vc.ResType, &vc.ResId, &vc.TimeType, &vc.TimeLocal, &vc.Click)
+		if err != nil {
+			return nil, err
+		}
+		vcList = append(vcList, vc)
+	}
+	return vcList, nil
+}

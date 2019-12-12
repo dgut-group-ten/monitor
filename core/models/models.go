@@ -1,5 +1,11 @@
 package models
 
+// RespMsg : http响应数据的通用结构
+type RespMsg struct {
+	Msg    string      `json:"msg"`
+	Result interface{} `json:"result"`
+}
+
 type UserOperation struct {
 	Uid               int64  `json:"uid"`
 	RemoteAddr        string `json:"remoteAddr"`
@@ -19,10 +25,10 @@ type UserOperation struct {
 }
 
 type VisitorCount struct {
-	VisType   string
-	ResType   string
-	ResId     string
-	TimeType  string
-	TimeLocal string
-	Click     int64
+	VisType   string `json:"visType"`
+	ResType   string `json:"resType"`
+	ResId     string `json:"resId"`
+	TimeType  string `json:"timeType"`
+	TimeLocal string `json:"timeLocal"`
+	Click     int64  `json:"click"`
 }
