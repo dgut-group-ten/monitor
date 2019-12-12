@@ -25,10 +25,10 @@ type UserOperation struct {
 }
 
 type VisitorCount struct {
-	VisType   string
-	ResType   string
-	ResId     string
-	TimeType  string
-	TimeLocal string
-	Click     int64
+	VisType   string `json:"visType"`
+	ResType   string `json:"resType"`
+	ResId     string `json:"resId"`
+	TimeType  string `json:"timeType"`
+	TimeLocal string `json:"timeLocal"`
+	Click     int64  `json:"click"`
 }
